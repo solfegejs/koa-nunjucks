@@ -1,0 +1,5 @@
+services:
+    solfege_koa_middleware_nunjucks_builder:
+        class: middleware/NunjucksBuilder
+
+
