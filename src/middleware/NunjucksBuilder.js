@@ -5,28 +5,31 @@ import nunjucks from "koa-nunjucks-async"
 export default class NunjucksBuilder implements MiddlewareBuilderInterface
 {
     viewPath:string;
-    variables:any;
+    globals:any;
 
-    constructor(viewPath:string, variables?:any)
+    constructor(viewPath:string)
     {
         this.viewPath = viewPath;
-        if (variables) {
-            this.variables = variables;
-        }
+        this.globals = {};
+    }
+
+    addGlobalVariable(name:string, value:*)
+    {
+        this.globals[name] = value;
+    }
+
+    addGlobalVariables(variables:any)
+    {
+        this.globals = Object.assign({}, this.globals, variables);
     }
 
     async build():Promise<Array<Function>>
     {
-        let globals = {};
-        if (typeof this.variables === "object") {
-            globals = Object.assign({}, globals, this.variables);
-        }
-
         let middleware = nunjucks(
             this.viewPath,
             {
                 ext: ".nunjucks",
-                globals: globals
+                globals: this.globals
             }
         );
 
